@@ -143,7 +143,7 @@ class _ChartsOfAccountsState extends State<ChartsOfAccounts> {
                       accountList;
                     });
                   }
-                },child: const Icon(FluentIcons.edit)),
+                }, child: const Icon(FluentIcons.edit)),
                 const Gap(30),
                 GestureDetector(onTap: (){
                   setState(() {

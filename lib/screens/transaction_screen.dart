@@ -139,7 +139,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
         ));
   }
 
-  _showAddDialog(String type) {
+  _showAddDialog() {
     DateTime? selected;
     return showDialog(
         barrierDismissible: false,
@@ -149,7 +149,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
             builder: (BuildContext context,
                 void Function(void Function()) setState) {
               return ContentDialog(
-                title: Text('Add a new $type'),
+                title: const Text('Add a new category'),
                 content: SizedBox(
                   height: 300,
                   width: 500,
@@ -247,7 +247,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
         icon: icon,
         label: Text(label),
         onPressed: () async {
-          _showAddDialog(label);
+          _showAddDialog();
         },
       ),
     );
