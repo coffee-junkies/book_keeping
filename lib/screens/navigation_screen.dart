@@ -20,10 +20,12 @@ class _NavigationScreenState extends State<NavigationScreen> {
     return NavigationView(
       appBar: NavigationAppBar(
           title: WindowTitleBarBox(
-            child: const Row(
+            child: Row(
               children: [
-                Expanded(child: Text("Heloo")),
-
+                Expanded(child: MoveWindow()),
+                MinimizeWindowButton(),
+                MaximizeWindowButton(),
+                CloseWindowButton(),
               ],
             ),
           ),

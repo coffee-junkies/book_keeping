@@ -1,6 +1,7 @@
 import 'package:accounting_book_keeping/providers/provider_chart_of_account.dart';
 import 'package:accounting_book_keeping/providers/provider_transaction.dart';
 import 'package:accounting_book_keeping/screens/navigation_screen.dart';
+import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
@@ -16,6 +17,14 @@ Future<void> main() async {
   boxChartOfAccounts =await Hive.openBox("chart_of_accounts_db");
   boxTransactions = await Hive.openBox("transactions_db");
   runApp(const MyApp());
+
+  doWhenWindowReady(() {
+    const initialSize = Size(1280, 720);
+    appWindow.minSize = initialSize;
+    appWindow.size = initialSize;
+    appWindow.alignment = Alignment.center;
+    appWindow.show();
+  });
 }
 
 class MyApp extends StatelessWidget {
