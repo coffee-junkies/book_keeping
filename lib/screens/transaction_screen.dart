@@ -56,7 +56,6 @@ class _TransactionScreenState extends State<TransactionScreen> {
               _commandBar(message: 'Add Equity', icon: const Icon(FluentIcons.user_clapper), label: 'Equity'),
               _commandBar(message: 'Add Expenses', icon: const Icon(FluentIcons.down), label: 'Expenses'),
               _commandBar(message: 'Add Revenues', icon: const Icon(FluentIcons.revenue_management), label: 'Revenues'),
-              _commandBar(message: 'Add COGS', icon: const Icon(FluentIcons.cost_control), label: 'COGS'),
             ],
           ),
         ),
@@ -140,7 +139,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
         ));
   }
 
-  _showAddDialog() {
+  _showAddDialog(String type) {
     DateTime? selected;
     return showDialog(
         barrierDismissible: false,
@@ -150,7 +149,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
             builder: (BuildContext context,
                 void Function(void Function()) setState) {
               return ContentDialog(
-                title: const Text('Add a new category'),
+                title: Text('Add a new $type'),
                 content: SizedBox(
                   height: 300,
                   width: 500,
@@ -248,7 +247,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
         icon: icon,
         label: Text(label),
         onPressed: () async {
-          _showAddDialog();
+          _showAddDialog(label);
         },
       ),
     );
