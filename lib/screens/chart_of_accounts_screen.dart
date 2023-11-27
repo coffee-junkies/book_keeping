@@ -1,4 +1,3 @@
-
 import 'package:collection/collection.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:fluent_ui/fluent_ui.dart';
@@ -9,9 +8,6 @@ import 'package:provider/provider.dart';
 import '../classes/chart_of_account.dart';
 import '../constance/constance.dart';
 import '../providers/provider_chart_of_account.dart';
-
-
-
 
 class ChartsOfAccounts extends StatefulWidget {
   const ChartsOfAccounts({super.key});
@@ -29,12 +25,13 @@ class _ChartsOfAccountsState extends State<ChartsOfAccounts> {
   TextEditingController descriptionController = TextEditingController();
   TextEditingController numericSystemController = TextEditingController();
 
-
   @override
   void initState() {
     selectedType = typeOfAccount[0];
     accountList = context.read<ProviderChartOfAccount>().chartOfAccountsList;
-    isSelected =  List<bool>.generate(context.read<ProviderChartOfAccount>().chartOfAccountsList.length, (int index) => false);
+    isSelected = List<bool>.generate(
+        context.read<ProviderChartOfAccount>().chartOfAccountsList.length,
+        (int index) => false);
     super.initState();
   }
 
@@ -48,7 +45,6 @@ class _ChartsOfAccountsState extends State<ChartsOfAccounts> {
 
   @override
   Widget build(BuildContext context) {
-
     return ScaffoldPage(
         header: PageHeader(
           title: const Text("Chart of Accounts"),
@@ -66,7 +62,7 @@ class _ChartsOfAccountsState extends State<ChartsOfAccounts> {
                   label: const Text('New'),
                   onPressed: () async {
                     bool isDone = await _showAddDialog(false, null, null);
-                    if(isDone) {
+                    if (isDone) {
                       setState(() {
                         accountList;
                       });
@@ -126,47 +122,54 @@ class _ChartsOfAccountsState extends State<ChartsOfAccounts> {
 //   }
 //   return null; // Use default value for other states and odd rows.
 // }),
-        cells: <mat.DataCell>[
-          mat.DataCell(
-              Text(accountList[index].numericSystem.toString())),
-          mat.DataCell(Text(accountList[index].name)),
-          mat.DataCell(Text(accountList[index].type)),
-          mat.DataCell(Text(accountList[index].description)),
-          mat.DataCell(
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                GestureDetector(onTap: () async {
-                  bool isPressed = await _showAddDialog(true, accountList[index], index);
-                  if(isPressed){
-                    setState(() {
-                      accountList;
-                    });
-                  }
-                }, child: const Icon(FluentIcons.edit)),
-                const Gap(30),
-                GestureDetector(onTap: (){
-                  setState(() {
-                    _deleteSelected(index, accountList[index]);
-                  });
-                },child: const Icon(FluentIcons.delete))
-              ],
-            ),
-          )
-        ],
-        selected: index == selectedIndex,
-        onSelectChanged: (bool? value) {
-          setState(() {
-            selectedIndex = index;
-          });
-        },
-      ),
-    )
+            cells: <mat.DataCell>[
+              mat.DataCell(Text(accountList[index].numericSystem.toString())),
+              mat.DataCell(Text(accountList[index].name)),
+              mat.DataCell(Text(accountList[index].type)),
+              mat.DataCell(Text(accountList[index].description)),
+              mat.DataCell(
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    GestureDetector(
+                        onTap: () async {
+                          bool isPressed = await _showAddDialog(
+                              true, accountList[index], index);
+                          if (isPressed) {
+                            setState(() {
+                              accountList;
+                            });
+                          }
+                        },
+                        child: const Icon(FluentIcons.edit)),
+                    const Gap(30),
+                    GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _deleteSelected(index, accountList[index]);
+                          });
+                        },
+                        child: const Icon(FluentIcons.delete))
+                  ],
+                ),
+              )
+            ],
+            selected: index == selectedIndex,
+            onSelectChanged: (bool? value) {
+              setState(() {
+                if (selectedIndex == index) {
+                  _showSelectedDetail(element);
+                }
+                selectedIndex = index;
+              });
+            },
+          ),
+        )
         .toList();
   }
 
   _showAddDialog(bool isEditing, ChartOfAccounts? e, int? index) async {
-    if(e != null){
+    if (e != null) {
       categoryController.text = e.name;
       numericSystemController.text = e.numericSystem.toString();
       selectedType = e.type;
@@ -253,25 +256,27 @@ class _ChartsOfAccountsState extends State<ChartsOfAccounts> {
                   Button(
                     onPressed: () {
                       //for editing function
-                      if(e!=null && index != null){
+                      if (e != null && index != null) {
                         _deleteSelected(index, e);
                       }
                       //adding function
                       ChartOfAccounts chartOfAccounts = ChartOfAccounts(
                           numericSystem:
-                          int.parse(numericSystemController.text),
+                              int.parse(numericSystemController.text),
                           name: categoryController.text,
                           type: selectedType,
                           description: descriptionController.text);
 
-                      context.read<ProviderChartOfAccount>().addChartOfAccount(chartOfAccounts);
-                      boxChartOfAccounts.put(chartOfAccounts.name, chartOfAccounts);
+                      context
+                          .read<ProviderChartOfAccount>()
+                          .addChartOfAccount(chartOfAccounts);
+                      boxChartOfAccounts.put(
+                          chartOfAccounts.name, chartOfAccounts);
 
                       categoryController.clear();
                       descriptionController.clear();
                       numericSystemController.clear();
                       Navigator.pop(context, true);
-
                     },
                     child: const Text('Add'),
                   ),
@@ -283,9 +288,36 @@ class _ChartsOfAccountsState extends State<ChartsOfAccounts> {
                         descriptionController.clear();
                         numericSystemController.clear();
                         Navigator.pop(context, false);
-                      }
-                  ),
+                      }),
                 ],
+              );
+            },
+          );
+        });
+  }
+
+  _showSelectedDetail(ChartOfAccounts chartOfAccounts) {
+    return showDialog(
+        barrierDismissible: true,
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(
+            builder: (BuildContext context,
+                void Function(void Function()) setState) {
+              return ContentDialog(
+                title: Text("${chartOfAccounts.numericSystem} - ${chartOfAccounts.name}"),
+                content: SizedBox(
+                  height: 200,
+                  width: 500,
+                  child: Column(
+                    children: [
+                      const Gap(20),
+                      Text(chartOfAccounts.type, style: const TextStyle(fontWeight: FontWeight.bold),),
+                      const Gap(10),
+                      Text(chartOfAccounts.description),
+                    ],
+                  )
+                ),
               );
             },
           );

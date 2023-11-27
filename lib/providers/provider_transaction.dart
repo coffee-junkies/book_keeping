@@ -1,5 +1,6 @@
 
 import 'package:fluent_ui/fluent_ui.dart';
+import '../classes/chart_of_account.dart';
 import '../classes/transaction.dart';
 import '../constance/constance.dart';
 
@@ -7,6 +8,12 @@ import '../constance/constance.dart';
 class ProviderTransactions extends ChangeNotifier {
 
   List<Transaction> transactionsList = [];
+
+  List<ChartOfAccounts> assetsList = [];
+  List<ChartOfAccounts> liabilityList = [];
+  List<ChartOfAccounts> equityList = [];
+  List<ChartOfAccounts> expensesList = [];
+  List<ChartOfAccounts> revenueList = [];
 
 
   ProviderTransactions(){
