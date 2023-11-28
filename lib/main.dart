@@ -16,10 +16,11 @@ Future<void> main() async {
   Hive.registerAdapter(ChartOfAccountsAdapter());
   boxChartOfAccounts =await Hive.openBox("chart_of_accounts_db");
   boxTransactions = await Hive.openBox("transactions_db");
+  
   runApp(const MyApp());
 
   doWhenWindowReady(() {
-    const initialSize = Size(1280, 720);
+    const initialSize = Size(1280, 780);
     appWindow.minSize = initialSize;
     appWindow.size = initialSize;
     appWindow.alignment = Alignment.center;

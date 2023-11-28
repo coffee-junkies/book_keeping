@@ -19,7 +19,8 @@ class TransactionScreen extends StatefulWidget {
 }
 
 class _TransactionScreenState extends State<TransactionScreen> {
-  late String selectedType;
+  String? selectedType;
+  final menuController = FlyoutController();
   int selectedIndex = -1;
   late List<ChartOfAccounts> chartOfAccountsList;
   TextEditingController transactionController = TextEditingController();
@@ -29,7 +30,6 @@ class _TransactionScreenState extends State<TransactionScreen> {
   void initState() {
     chartOfAccountsList =
         context.read<ProviderChartOfAccount>().chartOfAccountsList;
-    selectedType = chartOfAccountsList[0].name;
     super.initState();
   }
 
@@ -46,19 +46,44 @@ class _TransactionScreenState extends State<TransactionScreen> {
         context.watch<ProviderTransactions>().transactionsList;
     return ScaffoldPage(
         header: PageHeader(
-          title: const Text("Transactions"),
-          commandBar: CommandBar(
-            mainAxisAlignment: MainAxisAlignment.end,
-            overflowBehavior: CommandBarOverflowBehavior.wrap,
-            primaryItems: [
-              _commandBar(message: 'Add Asset', icon: const Icon(FluentIcons.money), label: 'Asset'),
-              _commandBar(message: 'Add Liabilities', icon: const Icon(FluentIcons.bank), label: 'Liabilities'),
-              _commandBar(message: 'Add Equity', icon: const Icon(FluentIcons.user_clapper), label: 'Equity'),
-              _commandBar(message: 'Add Expenses', icon: const Icon(FluentIcons.down), label: 'Expenses'),
-              _commandBar(message: 'Add Revenues', icon: const Icon(FluentIcons.revenue_management), label: 'Revenues'),
-            ],
-          ),
-        ),
+            title: const Text("Transactions"),
+            commandBar: FlyoutTarget(
+                controller: menuController,
+                child: Button(
+                  child: const Text('New Transaction'),
+                  onPressed: () {
+                    menuController.showFlyout(
+                      autoModeConfiguration: FlyoutAutoConfiguration(
+                        preferredMode: FlyoutPlacementMode.topCenter,
+                      ),
+                      barrierDismissible: true,
+                      dismissOnPointerMoveAway: false,
+                      dismissWithEsc: true,
+                      builder: (context) {
+                        return MenuFlyout(items: [
+                          MenuFlyoutItem(
+                            leading: const Icon(FluentIcons.asset_library),
+                            text: const Text('Asset'),
+                            onPressed: (){
+                              Flyout.of(context).close();
+                              _showAddDialog("Asset");
+                            },
+                          ),
+                          MenuFlyoutItem(
+                            leading: const Icon(FluentIcons.copy),
+                            text: const Text('Copy'),
+                            onPressed: Flyout.of(context).close,
+                          ),
+                          MenuFlyoutItem(
+                            leading: const Icon(FluentIcons.delete),
+                            text: const Text('Delete'),
+                            onPressed: Flyout.of(context).close,
+                          ),
+                        ]);
+                      },
+                    );
+                  },
+                ))),
         content: mat.Material(
           child: Padding(
             padding: const EdgeInsets.all(16),
@@ -98,48 +123,48 @@ class _TransactionScreenState extends State<TransactionScreen> {
 //   }
 //   return null; // Use default value for other states and odd rows.
 // }),
-                    cells: <mat.DataCell>[
-                      mat.DataCell(Text(DateFormat.yMMMd().format(
-                          DateTime.parse(transactions[index].dateTime)))),
-                      mat.DataCell(
-                          Text(transactions[index].transactionDescription)),
-                      mat.DataCell(
-                          Text(transactions[index].amount.toString())),
-                      mat.DataCell(Text(transactions[index].category)),
-                      mat.DataCell(
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            GestureDetector(
-                                onTap: () {},
-                                child: const Icon(FluentIcons.edit)),
-                            const Gap(30),
-                            GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    _deleteSelected(
-                                        index, transactions[index]);
-                                  });
-                                },
-                                child: const Icon(FluentIcons.delete))
-                          ],
-                        ),
-                      )
-                    ],
-                    selected: index == selectedIndex,
-                    onSelectChanged: (bool? value) {
-                      setState(() {
-                        selectedIndex = index;
-                      });
-                    },
-                  ),
-                )
+                        cells: <mat.DataCell>[
+                          mat.DataCell(Text(DateFormat.yMMMd().format(
+                              DateTime.parse(transactions[index].dateTime)))),
+                          mat.DataCell(
+                              Text(transactions[index].transactionDescription)),
+                          mat.DataCell(
+                              Text(transactions[index].amount.toString())),
+                          mat.DataCell(Text(transactions[index].category)),
+                          mat.DataCell(
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                GestureDetector(
+                                    onTap: () {},
+                                    child: const Icon(FluentIcons.edit)),
+                                const Gap(30),
+                                GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        _deleteSelected(
+                                            index, transactions[index]);
+                                      });
+                                    },
+                                    child: const Icon(FluentIcons.delete))
+                              ],
+                            ),
+                          )
+                        ],
+                        selected: index == selectedIndex,
+                        onSelectChanged: (bool? value) {
+                          setState(() {
+                            selectedIndex = index;
+                          });
+                        },
+                      ),
+                    )
                     .toList()),
           ),
         ));
   }
 
-  _showAddDialog() {
+  _showAddDialog(String label) {
     DateTime? selected;
     return showDialog(
         barrierDismissible: false,
@@ -187,7 +212,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                           width: double.infinity,
                           child: ComboBox<String>(
                             value: selectedType,
-                            items: chartOfAccountsList.map((e) {
+                            items: _getList(label).map((e) {
                               return ComboBoxItem(
                                 value: e.name,
                                 child: Text(e.name),
@@ -208,7 +233,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                           dateTime: selected.toString(),
                           transactionDescription: transactionController.text,
                           amount: double.parse(amountController.text),
-                          category: selectedType);
+                          category: selectedType as String);
                       boxTransactions.put(
                           "${transaction.dateTime}-${transaction.transactionDescription}",
                           transaction);
@@ -237,19 +262,29 @@ class _TransactionScreenState extends State<TransactionScreen> {
         "${transaction.dateTime}-${transaction.transactionDescription}");
   }
 
-  _commandBar({required String message,required Icon icon,required String label}) {
-    return CommandBarBuilderItem(
-      builder: (context, mode, w) => Tooltip(
-        message: message,
-        child: w,
-      ),
-      wrappedItem: CommandBarButton(
-        icon: icon,
-        label: Text(label),
-        onPressed: () async {
-          _showAddDialog();
-        },
-      ),
-    );
+
+  List<ChartOfAccounts> _getList(String label){
+    List<ChartOfAccounts> list = [];
+    switch (label) {
+      case "Asset":
+        list = context.read<ProviderTransactions>().assetsList;
+        break;
+      case "Liabilities":
+        list = context.read<ProviderTransactions>().liabilityList;
+        break;
+      case "Equity":
+        list = context.read<ProviderTransactions>().equityList;
+        break;
+      case "Expenses":
+        list = context.read<ProviderTransactions>().expensesList;
+        break;
+      case "Revenues":
+        list = context.read<ProviderTransactions>().revenueList;
+        break;
+      case "COGS":
+        list = context.read<ProviderTransactions>().costOfGoodSoldList;
+        break;
+    }
+    return list;
   }
 }

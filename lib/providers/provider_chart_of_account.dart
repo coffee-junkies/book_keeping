@@ -1,29 +1,23 @@
-
+import 'package:accounting_book_keeping/constance/constance.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 
 import '../classes/chart_of_account.dart';
-import '../constance/constance.dart';
+import '../constance/default_values.dart';
 
-
-class ProviderChartOfAccount extends ChangeNotifier{
+class ProviderChartOfAccount extends ChangeNotifier {
   List<ChartOfAccounts> chartOfAccountsList = [];
 
-  ProviderChartOfAccount(){
+  ProviderChartOfAccount() {
     initList();
   }
 
   initList() {
+    kChartOfAccounts.map((e) {
+      if(boxChartOfAccounts.get(e.numericSystem) == null){
+        boxChartOfAccounts.put(e.numericSystem, e);
+      }
+    }).toList();
     boxChartOfAccounts.values.map((e) => chartOfAccountsList.add(e)).toList();
-    notifyListeners();
-  }
-
-  addChartOfAccount(ChartOfAccounts account){
-    chartOfAccountsList.add(account);
-    notifyListeners();
-  }
-
-  deleteChartOfAccount(int index){
-    chartOfAccountsList.removeAt(index);
     notifyListeners();
   }
 }
