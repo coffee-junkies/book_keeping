@@ -71,13 +71,43 @@ class _TransactionScreenState extends State<TransactionScreen> {
                           ),
                           MenuFlyoutItem(
                             leading: const Icon(FluentIcons.copy),
-                            text: const Text('Copy'),
-                            onPressed: Flyout.of(context).close,
+                            text: const Text('Liability'),
+                            onPressed: (){
+                              Flyout.of(context).close();
+                              _showAddDialog("Liability");
+                            },
                           ),
                           MenuFlyoutItem(
                             leading: const Icon(FluentIcons.delete),
-                            text: const Text('Delete'),
-                            onPressed: Flyout.of(context).close,
+                            text: const Text('Equity'),
+                            onPressed: (){
+                              Flyout.of(context).close();
+                              _showAddDialog("Equity");
+                            },
+                          ),
+                          MenuFlyoutItem(
+                            leading: const Icon(FluentIcons.delete),
+                            text: const Text('Expense'),
+                            onPressed: (){
+                              Flyout.of(context).close();
+                              _showAddDialog("Expense");
+                            }
+                          ),
+                          MenuFlyoutItem(
+                            leading: const Icon(FluentIcons.delete),
+                            text: const Text('Revenue'),
+                            onPressed: (){
+                              Flyout.of(context).close();
+                              _showAddDialog("Revenue");
+                            },
+                          ),
+                          MenuFlyoutItem(
+                            leading: const Icon(FluentIcons.delete),
+                            text: const Text('Cost of Goods Sold'),
+                            onPressed: (){
+                              Flyout.of(context).close();
+                              _showAddDialog("Cost of Goods Sold");
+                            },
                           ),
                         ]);
                       },
@@ -269,19 +299,19 @@ class _TransactionScreenState extends State<TransactionScreen> {
       case "Asset":
         list = context.read<ProviderTransactions>().assetsList;
         break;
-      case "Liabilities":
+      case "Liability":
         list = context.read<ProviderTransactions>().liabilityList;
         break;
       case "Equity":
         list = context.read<ProviderTransactions>().equityList;
         break;
-      case "Expenses":
+      case "Expense":
         list = context.read<ProviderTransactions>().expensesList;
         break;
-      case "Revenues":
+      case "Revenue":
         list = context.read<ProviderTransactions>().revenueList;
         break;
-      case "COGS":
+      case "Cost of Goods Sold":
         list = context.read<ProviderTransactions>().costOfGoodSoldList;
         break;
     }

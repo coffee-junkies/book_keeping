@@ -1,4 +1,5 @@
 import 'package:accounting_book_keeping/providers/provider_chart_of_account.dart';
+import 'package:accounting_book_keeping/providers/provider_income_statement.dart';
 import 'package:accounting_book_keeping/providers/provider_transaction.dart';
 import 'package:accounting_book_keeping/screens/navigation_screen.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
@@ -38,6 +39,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (context) => ProviderTransactions(),),
         ChangeNotifierProvider(create: (context) => ProviderChartOfAccount(),),
+        ChangeNotifierProvider(create: (context) => ProviderIncomeStatement(),),
       ],
       child: const FluentApp(
         debugShowCheckedModeBanner: false,

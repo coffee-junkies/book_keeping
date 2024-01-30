@@ -126,7 +126,7 @@ class _ChartsOfAccountsState extends State<ChartsOfAccounts> {
                 void Function(void Function()) setState) {
               return ContentDialog(
                 title: Text("${chartOfAccounts.numericSystem} - ${chartOfAccounts.name}"),
-                content: SizedBox(
+                content: SizedBox(   
                   height: 300,
                   width: 500,
                   child: Column(
